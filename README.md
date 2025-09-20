@@ -1,5 +1,7 @@
 # FeatureVotes
 
+loom demo: https://www.loom.com/share/1a74344c6baa49bcb7f75561ec5046d3?sid=ff9ce6d7-bc05-42a0-8037-6131ba3e6627
+
 A mobile-first feature voting app built with Vite + React + TypeScript, backed by an Express + SQLite API, and packaged for iOS via Capacitor.
 
 ## Quick Start
