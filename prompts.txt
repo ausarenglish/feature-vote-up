@@ -1,0 +1,56 @@
+Write each prompt I send to you into a file prompts.txt, so I can audit the work.
+
+Create a minimal backend under /server and wire the frontend client.
+
+Files:
+- /server/index.js  (Node + Express)
+- /server/db.js     (better-sqlite3 wrapper)
+- /server/schema.sql
+
+DB:
+- SQLite file at /server/data.sqlite
+- Table features (
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    votes INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  )
+
+Server:
+- app.use(cors()) and app.use(express.json())
+- On boot, ensure schema exists (run schema.sql if table missing)
+- Endpoints:
+  GET  /features                    -> rows sorted by votes DESC, created_at DESC
+  POST /features {title}            -> insert, return row
+  POST /features/:id/upvote         -> increment votes, return row
+- Basic error handler returning JSON { error } with status codes
+
+Frontend client:
+- Create /src/lib/api.ts with getFeatures(), createFeature(title), upvoteFeature(id).
+- const base = import.meta.env.VITE_API_URL
+- Home loads getFeatures() on mount; New posts then navigates home.
+- Upvote is optimistic and rolls back on failure.
+
+package.json scripts:
+- "server": "node server/index.js"
+- "server:watch": "nodemon server/index.js"
+
+Also add .env.example with:
+VITE_API_URL=http://localhost:4000
+
+Update README with backend run steps.
+
+Update the backend to run correctly with "type": "module" in package.json.
+
+- Convert /server/index.js and /server/db.js to ESM imports:
+  * Replace all `const X = require(...)` with `import ... from '...'`
+  * Use `export default` or named exports where appropriate.
+- Ensure /server/schema.sql stays the same.
+- Update any module.exports usage to ES export syntax.
+- Keep all functionality the same: Express server, CORS, JSON middleware, better-sqlite3 for the DB, endpoints for /features and /features/:id/upvote.
+
+Also, in package.json:
+- Ensure "server": "node server/index.js" works under ESM.
+- Keep "server:watch": "nodemon server/index.js".
+
+Do not rename to .cjs — keep .js and use proper ESM imports/exports instead.

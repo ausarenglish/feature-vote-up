@@ -7,7 +7,7 @@ export default function Home() {
   const [features, setFeatures] = useState<Feature[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [upvotingIds, setUpvotingIds] = useState<Set<string>>(new Set());
+  const [upvotingIds, setUpvotingIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     loadFeatures();
