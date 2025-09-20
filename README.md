@@ -1,12 +1,20 @@
-# Welcome to your Lovable project
+# FeatureVotes
+
+A mobile-first feature voting app built with Vite + React + TypeScript.
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/d51f9ab8-90c1-4abd-85f6-a538d61430ab
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Home**: View and upvote features with optimistic updates
+- **New Feature**: Simple form to submit feature requests
+- **Settings**: Toggle for haptic feedback preferences
+- Mobile-first design with 44px minimum touch targets
+- Safe area padding for mobile devices
+
+## Development
 
 **Use Lovable**
 
@@ -14,13 +22,11 @@ Simply visit the [Lovable Project](https://lovable.dev/projects/d51f9ab8-90c1-4a
 
 Changes made via Lovable will be committed automatically to this repo.
 
-**Use your preferred IDE**
+**Run locally**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Requirements: Node.js & npm ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Quick start:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
@@ -32,9 +38,24 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
 ```
+
+The app will be available at `http://localhost:8080`
+
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```
+VITE_API_URL=http://localhost:3001
+```
+
+Replace with your backend API URL. The app expects these endpoints:
+- `GET /features` - Returns array of features
+- `POST /features` - Creates new feature (body: `{title: string}`)
+- `POST /features/:id/upvote` - Upvotes a feature
 
 **Edit a file directly in GitHub**
 
