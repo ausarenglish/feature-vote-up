@@ -54,3 +54,80 @@ Also, in package.json:
 - Keep "server:watch": "nodemon server/index.js".
 
 Do not rename to .cjs — keep .js and use proper ESM imports/exports instead.
+
+Scan the repo and show me a concise tree of src/, key pages/components, and where features list, add form, and settings live. Don't change anything yet. Identify the component(s) that render:
+1) the features list and vote button,
+2) the add/new feature form,
+3) the empty state if any,
+4) the main layout/shell.
+
+Do a lightweight visual polish without changing behavior:
+- Ensure a consistent spacing scale (use Tailwind 4/6/8/12/16 etc). 
+- Make the page title clearly styled (semibold, sensible size).
+- Give feature cards a subtle shadow and consistent rounded corners.
+- Ensure primary buttons (add / upvote) have min-h-[44px] and px-4 py-2.
+- Use one accent color (keep current blue if present) and neutral grays for text.
+Edit only the files that render the main list and its cards. Show diffs.
+Then run: npm run dev and confirm the page renders at http://localhost:8080
+
+Add a simple loading state while features are fetched:
+- Create a FeatureListSkeleton with 3 gray "card" rows using Tailwind animate-pulse.
+- Show it whenever the list query is loading or we have no data yet but are fetching.
+Place the skeleton near the list component and wire it in. Show diffs and how you detect loading.
+
+Add a friendly empty state when there are zero features and not loading:
+- Big title "No features yet"
+- Sub text "Be the first to suggest one."
+- A button to open the "New Feature" form.
+Create a tiny EmptyState.tsx component and use it in the list container. Show diffs.
+
+Improve tap feedback on the vote button:
+- Add a quick scale/shine animation on click (CSS class + 120ms transition).
+- Try navigator.vibrate?.(10) for web; guard so it never throws.
+- Expose a small helper useHaptic() that calls vibrate on web and is a no-op elsewhere.
+Apply it to the vote button only. Show diffs.
+
+Add a simple sort toggle aligned to the right of the list header:
+- Two pills: "Top" (default) and "Newest".
+- Sorting is client-side: Top = votes desc, Newest = created_at desc.
+Do not change the API. Keep state locally in the list container and memoize the sorted array.
+Show diffs and confirm both modes work.
+
+Make sure the page respects the iOS safe area so the floating + button and bottom content never collide with the indicator:
+- Add a CSS utility (globals.css or index.css) for .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 16px); }
+- Apply safe-bottom to the outer page container.
+Show diffs.
+
+Ensure interactive elements have accessible names and focus states:
+- Vote button: aria-label="Upvote <feature title>" and visible focus ring.
+- Add button: aria-label="Add feature".
+- List headings use semantic <h1>/<h2>.
+Show diffs.
+
+Run the production build and copy to iOS:
+npm run build
+npx cap copy ios
+Confirm the copy succeeded and remind me to press Run in Xcode (workspace already open).
+
+You are working inside my `feature-vote-up` project.  
+I need you to add **tiny polling + focus refresh** to keep the feature list in sync across web and iOS.  
+
+Steps:  
+1. Open the component that renders the list of features (likely `src/components/FeatureList.tsx` or equivalent).  
+2. Add a `fetchFeatures` function that:  
+   - Fetches `${import.meta.env.VITE_API_URL}/features`  
+   - Uses `cache: "no-store"`  
+   - Cancels in-flight requests with an `AbortController`.  
+   - Updates local state.  
+3. Add a `refetch` wrapper and call it:  
+   - Immediately on mount  
+   - Every 3 seconds with `setInterval`  
+   - On `window.focus` and `document.visibilitychange` (web)  
+   - On iOS app foreground via Capacitor's `App.addListener("appStateChange")`.  
+4. After a successful upvote or new feature submission, call `refetch()` to align with server state.  
+5. Clean up all intervals and listeners on unmount.  
+
+Make sure polling works on web **and** iOS simulator without errors if Capacitor isn't available. Guard the `App.addListener` import so it's safe on web.  
+
+Insert the code in a way that is copy-paste runnable with minimal changes.  
+Do not break optimistic updates — keep them, then immediately refetch from the server to resolve conflicts.
